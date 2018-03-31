@@ -33,7 +33,8 @@ public class JSONConverter {
         }
 
 
-        // try-with-resources statement based on post comment below :)
+        // try-with-resources statement based :)
+        //This a path for my VM, please change this link for your system!!!!!!!
         File file = new File("/home/marcdragon/Projects/Spring/spring-petclinic/src/main/java/org/springframework/samples/petclinic/migration/json.json");
         try (FileWriter fileWriter = new FileWriter(file)) {
             fileWriter.write(owners.toJSONString());
