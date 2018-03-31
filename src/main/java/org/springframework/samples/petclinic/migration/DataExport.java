@@ -10,6 +10,8 @@ public class DataExport {
     private ArrayList<HashMap<String, String>> set = new ArrayList<>();
 
     public void getData() {
+        JSONConverter json = new JSONConverter();
+
         try {
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/petclinic", "root", "petclinic");
 
@@ -24,10 +26,8 @@ public class DataExport {
 
             while (res.next()) {
                HashMap<String, String> results = new HashMap<>();
-               System.out.println(res.getInt(1)+"  "+res.getString(2)+"  "+res.getString(3));
 
-
-               for(int i =0; i<md.getColumnCount(); i++) {
+               for(int i = 1; i<=md.getColumnCount(); i++) {
                    if (md.getColumnName(i)!=null && res.getString(i)!=null) {
                        results.put(md.getColumnName(i), res.getString(i));
                    }
@@ -37,12 +37,13 @@ public class DataExport {
            }
 
            con.close();
+
+           json.convert(set);
         }
         catch (Exception e)
         {
             System.out.println(e.getMessage());
         }
-
     }
 
 
