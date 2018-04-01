@@ -11,16 +11,15 @@ public class DataExport {
 
     private ArrayList<HashMap<String, String>> set = new ArrayList<>();
 
-    public void getData() {
-        JSONConverter json = new JSONConverter();
+    public void getData(String url, String user, String password) {
 
         try {
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/petclinic", "root", "petclinic");
+            Connection con = DriverManager.getConnection(url,user,password);
 
             Statement stmt = con.createStatement();
-
-            stmt.executeQuery("USE petclinic");
-
+            if (url == "jdbc:mysql://localhost:3306/petclinic") {
+                stmt.executeQuery("USE petclinic");
+            }
 
             ResultSet res = stmt.executeQuery("SELECT * FROM owners;");
 
