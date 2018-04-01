@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map.*;
 import java.util.Set;
 
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 
 public class JSONConverter {
 
@@ -28,7 +28,7 @@ public class JSONConverter {
                 obj.put(e.getKey().toString(), e.getValue().toString());
             }
 
-            owners.appendElement(obj);
+            owners.add(obj);
 
         }
 
