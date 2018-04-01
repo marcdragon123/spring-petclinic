@@ -49,5 +49,13 @@ public class DataExport {
        }
     }
 
+    public ArrayList<HashMap<String, String>> getList() {
+        return set;
+    }
+
+    public void setList(ArrayList<HashMap<String, String>> set) {
+        this.set = set;
+    }
+
 
 }
