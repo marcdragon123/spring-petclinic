@@ -1,5 +1,10 @@
 package org.springframework.samples.petclinic.consistency;
 
+import java.sql.*;
+
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Properties;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -50,10 +55,70 @@ public class Driver {
                 errors.add(i);
                 add = false;
             }
-
-            //Check the errors to know which index of the array list to add or update to postgresql
-            //TODO: Add the push to postgreSQL
         }
 
+        //Check the errors to know which index of the array list to add or update to postgresql
+        //TODO: Add the push to postgreSQL
+        if (!errors.isEmpty()){
+            //there is something in errors that needs to be put into the psql db from the sql db
+
+            //loop thru errors
+            for (int i = 0; i < errors.size(); i++) {
+                System.out.println("errors found");
+                System.out.println("SQL index of error: "+errors.get(i));
+                //get the # that was added to errors arrayList
+                Integer index = errors.get(i);
+
+                //get() on sql list with that index
+                HashMap<String, String> sqlData = list1.get(index);
+
+                //connect to psql
+                Connection c = null;
+                try {
+                    String url = "jdbc:postgresql://localhost/mydb";
+                    String  user = "mydb";
+                    String password = "potuto";
+                    c = DriverManager.getConnection(url,user,password);
+                    System.out.println("Connection success");
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                    System.out.println("connection failure");
+                }
+
+                //call a method that will update that entry in the psql side
+                //that index is the "id" field in psql
+                updatePSQL(c,sqlData,index);
+
+
+                //boom
+            }
+
+        }
+
+    }
+
+    public static void updatePSQL(Connection c, HashMap<String, String> data, int id){
+
+        Statement stm = null;
+
+        Set<Entry<String, String>> set = data.entrySet();
+        Iterator<Entry<String, String>> it = set.iterator();
+
+        Entry<String, String> e = it.next();
+
+        String column_name = e.getKey();
+        String value = e.getValue();
+
+        String pSQL = "UPDATE owners SET "+column_name+"= "+value+" WHERE id = "+id+";";
+
+        try{
+            stm = c.createStatement();
+            stm.execute(pSQL);
+
+        }
+        catch(Exception exc){
+            exc.printStackTrace();
+        }
     }
 }
