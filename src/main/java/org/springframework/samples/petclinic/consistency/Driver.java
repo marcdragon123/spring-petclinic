@@ -46,6 +46,8 @@ public class Driver {
 
                 String check = map2.get(key);
 
+                System.out.println("sql value: "+val + "    VS     psql value: "+check);
+
                 if(!check.equalsIgnoreCase(val)) {
                     add = true;
                 }
@@ -110,12 +112,11 @@ public class Driver {
         String column_name = e.getKey();
         String value = e.getValue();
 
-        String pSQL = "UPDATE owners SET "+column_name+"= "+value+" WHERE id = "+id+";";
+        String pSQL = "UPDATE owners SET "+column_name+"= '"+value+"' WHERE id = "+id+";";
 
         try{
             stm = c.createStatement();
             stm.execute(pSQL);
-
         }
         catch(Exception exc){
             exc.printStackTrace();
