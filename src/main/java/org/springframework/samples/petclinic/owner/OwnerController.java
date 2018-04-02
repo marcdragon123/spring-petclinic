@@ -16,6 +16,8 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.consistency.DataExport;
+import org.springframework.samples.petclinic.consistency.Driver;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,10 +30,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.sql.*;
 
 import java.sql.DriverManager;
+import org.springframework.samples.petclinic.consistency.*;
+import org.springframework.samples.petclinic.migration.*;
 import java.sql.SQLException;
 import java.util.Properties;
 /**
@@ -101,6 +106,21 @@ class OwnerController {
 
         // find owners by last name
         Collection<Owner> results = this.owners.findByLastName(owner.getLastName());
+        //SHADOW READ
+        try {
+            String query = "SELECT * FROM owners WHERE last_name ='"+owner.getLastName()+"';";
+            DataExport d1 = new DataExport();//psql
+            DataExport d2 = new DataExport(); //mysql
+            HashMap<String, String> psqlShadowMap = d1.getQuery(query,"jdbc:postgresql://localhost/mydb","mydb","potuto");
+            HashMap<String, String> mysqlShadowMap = d2.getQuery(query,"jdbc:mysql://localhost:3306/petclinic", "root", "petclinic");
+            if (psqlShadowMap!=mysqlShadowMap){
+                //fix shadow read
+                org.springframework.samples.petclinic.migration.Driver.Import();
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
         if (results.isEmpty()) {
             // no owners found
             result.rejectValue("lastName", "notFound", "not found");

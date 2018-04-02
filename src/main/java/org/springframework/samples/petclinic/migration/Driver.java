@@ -2,7 +2,10 @@ package org.springframework.samples.petclinic.migration;
 import java.sql.Connection;
 public class Driver {
     public static void main(String[] args) {
+        Import();
+    }
 
+    public static void Import(){
         DataExport d = new DataExport();
         d.getData();
 
@@ -14,6 +17,5 @@ public class Driver {
         for (int y = 0; y<j.getMyArr().length;y++){
             i.putData(c,j.getMyArr()[y]);
         }
-
     }
 }
