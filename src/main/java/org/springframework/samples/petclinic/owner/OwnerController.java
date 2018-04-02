@@ -29,7 +29,11 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Map;
+import java.sql.*;
 
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Properties;
 /**
  * @author Juergen Hoeller
  * @author Ken Krebs
@@ -66,6 +70,17 @@ class OwnerController {
             return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
         } else {
             this.owners.save(owner);
+            //shadow write
+            Connection c = null;
+            try {
+                String psql = "INSERT INTO owners (telephone, city, address, last_name, first_name, id) VALUES (\'"+owner.getTelephone()+"\', \'"+owner.getCity()+"\' ,\'"+owner.getAddress()+"\' ,\'"+owner.getLastName()+"\' ,\'"+owner.getId()+"\' ,\'"+owner.getFirstName()+"\');";
+                c = DriverManager.getConnection("jdbc:postgresql://localhost/mydb", "mydb", "potuto");
+                Statement stm = c.createStatement();
+                stm.execute(psql);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
             return "redirect:/owners/" + owner.getId();
         }
     }
@@ -115,6 +130,18 @@ class OwnerController {
         } else {
             owner.setId(ownerId);
             this.owners.save(owner);
+            //shadow write
+            Connection c = null;
+            try {
+                String psql = "UPDATE owners SET telephone= "+owner.getTelephone()+", city= "+owner.getCity()+", address= "+owner.getAddress()+", last_name = "+owner.getLastName()+", first_name= "+owner.getFirstName()+", id= "+owner.getId()+";";
+                c = DriverManager.getConnection("jdbc:postgresql://localhost/mydb", "mydb", "potuto");
+                Statement stm = c.createStatement();
+                stm.execute(psql);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+            //"UPDATE owners SET "+column_name+"= '"+value+"' WHERE id = "+id+";"
             return "redirect:/owners/{ownerId}";
         }
     }
