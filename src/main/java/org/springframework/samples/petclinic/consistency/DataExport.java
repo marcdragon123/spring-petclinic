@@ -57,5 +57,37 @@ public class DataExport {
         this.set = set;
     }
 
+    public HashMap<String, String> getQuery(String query, String url, String user, String password) {
+
+        HashMap<String, String> results = new HashMap<>();
+
+        try {
+            Connection con = DriverManager.getConnection(url,user,password);
+
+            Statement stmt = con.createStatement();
+            if (url == "jdbc:mysql://localhost:3306/petclinic") {
+                stmt.executeQuery("USE petclinic");
+            }
+
+            ResultSet res = stmt.executeQuery(query);
+
+            ResultSetMetaData md = res.getMetaData();
+
+            for(int i = 1; i<=md.getColumnCount(); i++) {
+               if (md.getColumnName(i)!=null && res.getString(i)!=null) {
+                    results.put(md.getColumnName(i), res.getString(i));
+               }
+            }
+
+            con.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+
+        return results;
+    }
+
 
 }

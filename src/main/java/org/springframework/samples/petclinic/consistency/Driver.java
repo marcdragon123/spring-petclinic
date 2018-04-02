@@ -39,6 +39,10 @@ public class Driver {
 
             Iterator<Entry<String, String>> it1 = set1.iterator();
             Iterator<Entry<String, String>> it2 = set2.iterator();
+
+            HashMap<String, String> temp;
+
+
             while(it1.hasNext() && it2.hasNext()) {
 
                 Entry<String, String> e1 = it1.next();
@@ -46,13 +50,10 @@ public class Driver {
                 String key = e1.getKey();
                 String val = e1.getValue();
 
-                String check = map2.get(key);// THIS IS WHERE IT IS GOING WRONG. The get(i) method goes from 0 to 9. say you are at the 3rd entry:
-                //you perform list1.get(2) and list2.get(2). problem is, the two lists are not aligned properly by id. so index 2 in the first list has id =3 and
-                //index 2 in the second list gives id = 4 because of this misalignment.  What you should do is for each entry in list1, get the key 'id' and its corresponding value.
-                //after that in list 2, you go thru the 'id' keys and get the one that matches.
-                //alternatively, maybe we can loop SQL and PSQL queries to make it easier, i.e. "SELECT FROM owners WHERE id="<id value from list 1>
 
-                System.out.println("sql value: "+val + "    VS     psql value: "+check);
+                temp = dPSQL.getQuery("SELECT * FROM owners WHERE id = '"+ map1.get("id") +"'","jdbc:postgresql://localhost/mydb","mydb","potuto");
+
+                String check = temp.get(key);
 
                 if(!check.equalsIgnoreCase(val)) {
                     add = true;
