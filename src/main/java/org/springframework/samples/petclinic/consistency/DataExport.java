@@ -73,6 +73,8 @@ public class DataExport {
 
             ResultSetMetaData md = res.getMetaData();
 
+            res.next();
+
             for(int i = 1; i<=md.getColumnCount(); i++) {
                if (md.getColumnName(i)!=null && res.getString(i)!=null) {
                     results.put(md.getColumnName(i), res.getString(i));

@@ -51,9 +51,11 @@ public class Driver {
                 String val = e1.getValue();
 
 
-                temp = dPSQL.getQuery("SELECT * FROM owners WHERE id = '"+ map1.get("id") +"'","jdbc:postgresql://localhost/mydb","mydb","potuto");
+                temp = dPSQL.getQuery("select * from owners where \"id\" LIKE '%"+map1.get("id")+"%' LIMIT 1","jdbc:postgresql://localhost/mydb","mydb","potuto");
 
                 String check = temp.get(key);
+
+                check = check.trim();
 
                 if(!check.equalsIgnoreCase(val)) {
                     add = true;
